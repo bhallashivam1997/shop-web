@@ -70,6 +70,13 @@ describe('removeRejected', () => {
     expect(result.applied).toHaveLength(3);
   });
 
+  it('drops only maxPrice when the server reports minPrice > maxPrice', () => {
+    const result = removeRejected({ ...DEFAULT_FILTERS, minPrice: 50, maxPrice: 10 }, [
+      { param: 'maxPrice', value: '10', message: 'must be >= minPrice' },
+    ]);
+    expect(result.filters).toEqual({ ...DEFAULT_FILTERS, minPrice: 50 });
+  });
+
   it('drops every category when value is missing', () => {
     expect(removeRejected(filters, [{ param: 'category', message: 'bad' }]).filters.categories).toEqual([]);
   });
